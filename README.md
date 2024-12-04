@@ -8,7 +8,7 @@ This project is a Laravel-based Call Report Application, designed to allow users
 Below is a screenshot of the Call Report Application:
 
 <p align="center">
-  <img src="public/screenshots.png" alt="Call Report Application"/>
+  <img src="/public/screenshot.png" alt="Call Report Application"/>
 </p>  
 
 ## Approach
