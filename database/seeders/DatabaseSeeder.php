@@ -10,13 +10,18 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Create agents
+        \App\Models\Agent::factory(5)->create()->each(function ($agent) {
+            // Create customers for each agent
+            $agent->customers()->saveMany(\App\Models\Customer::factory(10)->make())
+                ->each(function ($customer) use ($agent) {
+                    // Create calls for each customer
+                    $customer->calls()->saveMany(\App\Models\Call::factory(3)->make([
+                        'agent_id' => $agent->id,
+                    ]));
+                });
+        });
     }
 }
