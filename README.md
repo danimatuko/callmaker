@@ -1,66 +1,106 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Call Report Application
+
+## Overview
+This project is a Laravel-based Call Report Application, designed to allow users to view detailed insights about call data, including agent performance and customer interactions. The application includes a filtering system where users can filter calls by agent, start date, and end date. The project also includes pagination for easy navigation through the call records.  
+
+## Screenshot
+
+Below is a screenshot of the Call Report Application:
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+  <img src="public/screenshots.png" alt="Call Report Application"/>
+</p>  
 
-## About Laravel
+## Approach
+- **Models**: The application uses the `Call`, `Customer`, and `Agent` models to represent the core data.
+- **Controllers**: The `CallReportController` is responsible for processing requests and interacting with the models.
+- **Pagination**: Implemented Laravel's built-in pagination for displaying call records in pages.
+- **Blade Templates**: The frontend is built using Blade templates. The `calls.index` view displays the call data and includes a form for filtering results by agent and date range.
+- **Filter**: The user can filter the data by selecting an agent and specifying a date range.
+- **UI Design**: The user interface is styled using [Pico CSS](https://picocss.com/), a minimalistic and simple CSS framework chosen for the simplicity and speed of development.
+- **Database**: The application uses SQLite for the database, chosen for simplicity in development and testing.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Seeder
+To quickly populate the database with sample data, the `DatabaseSeeder` is provided. This seeder creates sample `Agent`, `Customer`, and `Call` records.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- The seeder creates **5 agents**.
+- Each agent is associated with **10 customers**.
+- For each customer, **3 call records** are generated with a reference to the respective agent and customer.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This ensures that the application has enough data for testing and viewing the call report functionality.
 
-## Learning Laravel
+Here is the seeder code:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```php
+namespace Database\Seeders;
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+use Illuminate\Database\Seeder;
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    public function run()
+    {
+        // Create agents
+        \App\Models\Agent::factory(5)->create()->each(function ($agent) {
+            // Create customers for each agent
+            $agent->customers()->saveMany(\App\Models\Customer::factory(10)->make())
+                ->each(function ($customer) use ($agent) {
+                    // Create calls for each customer
+                    $customer->calls()->saveMany(\App\Models\Call::factory(3)->make([
+                        'agent_id' => $agent->id,
+                    ]));
+                });
+        });
+    }
+}
+```
+## Installation
 
-## Laravel Sponsors
+ Clone the repository:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+   ```bash
+   git clone https://github.com/danimatuko/callmaker.git
+   ```
 
-### Premium Partners
+   ```bash
+   cd callmaker
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+   ```
+Install dependencies:
+```bash
+composer install
+   ```
+Set up environment configuration:
+```bash
+cp .env.example .env
+   ```
+Generate the application key:
+```bash
+php artisan key:generate
+   ```
 
-## Contributing
+```bash
+Configure the database:
+# .env
+```bash
+DB_CONNECTION=sqlite
+DB_DATABASE=/path_to_your_project/database/database.sqlite
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Run migrations and seed the database
+```bash
+php artisan migrate
+php artisan db:seed
+   ```
+Start the application:
+```bash
+php artisan serve
+   ```
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
