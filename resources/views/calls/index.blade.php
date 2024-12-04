@@ -80,11 +80,8 @@
 
 <footer class="container">
     <hr>
-    <p>&copy; {{ date('Y') }} <a href="https://github.com/yourusername" target="_blank">Dani Matiko</a> 😊 - Have a great day!</p>
+    <p>&copy; {{ date('Y') }} <a href="https://github.com/danimatuko" target="_blank">Dani Matuko</a> 😊 - Have a great day!</p>
 </footer>
-
-
-
 
 </body>
 </html>
