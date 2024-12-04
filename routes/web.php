@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CallReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [CallReportController::class, 'index'])->name('calls.index');
+
