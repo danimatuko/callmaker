@@ -15,7 +15,7 @@ class CallReportController extends Controller
             ->when($request->input('start_date') && $request->input('end_date'), function ($query) use ($request) {
                 $query->whereBetween('call_time', [$request->start_date, $request->end_date]);
             })
-            ->paginate(10);
+            ->simplePaginate(10);
 
         $agents = \App\Models\Agent::all();
 
